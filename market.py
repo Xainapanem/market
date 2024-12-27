@@ -152,3 +152,4 @@ def cr_table():
 
 all_products = []
 main_menu()
+
