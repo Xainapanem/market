@@ -95,7 +95,7 @@ class Product:
                     i.number = change_cost
                 else:
                     print("Такой вариант отсутвует в списке!")
-                    change_product()
+                    Product.change_product()
 
                 break
 
@@ -142,13 +142,45 @@ def main_menu():
         main_menu()
 
 def cr_table():
-    print('-'*75)
-    print("Артикул", "Название", "Стоимость", "Количество", '|', sep=' ' * 10)
-    print('-'*75)
+    max_len = 0
+    flag = True
     for i in all_products:
-        print(str(i.article) + ' ' * (7 - len(str(i.article)) + 9), i.name + ' ' * (8 - len(str(i.name)) + 9),
-              str(i.cost) + ' ' * (9 - len(str(i.cost)) + 9), str(i.number) + ' ' * (10 - len(str(i.number)) + 9), '|')
-        print('-'*75)
+        if len(i.name) >= 15 and len(i.name) > max_len:
+            max_len = len(i.name)
+            if flag:
+                flag = False
+        elif flag:
+            maxi = max(len(str(i.article)), len(i.name), len(str(i.cost)), len(str(i.number)))
+            if maxi > max_len:
+                if maxi < 15:
+                    max_len = maxi
+                else:
+                    max_len = 15
+
+    print('-' * (max_len + 83))
+    print("Артикул", "Название" + ' ' * max_len + "Стоимость", "Количество", '|', sep=' ' * 16)
+    print('-' * (max_len + 83))
+
+    for i in all_products:
+
+        if len(str(i.article)) > 15:
+            article = str(i.article)[0:15] + "..."
+        else:
+            article = str(i.article)
+
+        if len(str(i.cost)) > 15:
+            cost = str(i.cost)[0:15] + "..."
+        else:
+            cost = str(i.cost)
+
+        if len(str(i.number)) > 15:
+            number = str(i.number)[0:15] + "..."
+        else:
+            number = str(i.number)
+
+        print(article + ' ' * (7 - len(article) + 15), i.name + ' ' * (8 - len(i.name) + max_len - 1),
+              cost + ' ' * (9 - len(cost) + 15), number + ' ' * (10 - len(number) + 15), '|')
+        print('-' * (max_len + 83))
 
 all_products = []
 main_menu()
