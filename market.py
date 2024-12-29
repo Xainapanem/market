@@ -1,3 +1,6 @@
+from logging import exception
+
+
 class Product:
     def __init__(self, article, name, cost, number):
         self.article = article
@@ -118,28 +121,6 @@ class Product:
         print("Товара с таким артикулом не найдено!")
         main_menu()
 
-def main_menu():
-    if len(all_products) > 0:
-        cr_table()
-    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n")
-    var = int(input())
-    if var == 1:
-        Product.add_product()
-    if var == 2:
-        if len(all_products) != 0:
-            Product.change_product()
-        else:
-            print("В каталоге отсутствуют товары!")
-            Product.main_menu()
-    if var == 3:
-        if len(all_products) != 0:
-            Product.delete_product()
-        else:
-            print("В каталоге отсутствуют товары!")
-            main_menu()
-    else:
-        print("Введено неверное значение!")
-        main_menu()
 
 def cr_table():
     max_len = 0
@@ -182,6 +163,39 @@ def cr_table():
               cost + ' ' * (9 - len(cost) + 15), number + ' ' * (10 - len(number) + 15), '|')
         print('-' * (max_len + 83))
 
+
+def main_menu():
+    if len(all_products) > 0:
+        cr_table()
+    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Экспорт/Импорт каталога")
+    var = int(input())
+    if var == 1:
+        Product.add_product()
+    elif var == 2:
+        if len(all_products) != 0:
+            Product.change_product()
+        else:
+            print("В каталоге отсутствуют товары!")
+            Product.main_menu()
+    elif var == 3:
+        if len(all_products) != 0:
+            Product.delete_product()
+        else:
+            print("В каталоге отсутствуют товары!")
+            main_menu()
+    elif var == 4:
+        print("1 - Импортировать данные из файла\n 2 - Экспортировать данные в файл")
+        try:
+            var_imex = int(input())
+        except ValueError:
+            print("Введено неверное значение!")
+            main_menu()
+        else:
+
+    else:
+        print("Введено неверное значение!")
+        main_menu()
+
+
 all_products = []
 main_menu()
-
