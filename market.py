@@ -66,7 +66,7 @@ class Product:
                     print("Стоимость товара изменена с", i.cost, "на", change_cost)
                     i.number = change_cost
 
-                elif var == 6:
+                elif var == 5:
                     flag = True
                     while flag:
                         flag = False
