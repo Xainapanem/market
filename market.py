@@ -167,7 +167,7 @@ def cr_table():
 def main_menu():
     if len(all_products) > 0:
         cr_table()
-    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Экспорт/Импорт каталога")
+    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Экспорт/Импорт каталога\n5 - Выйти из программы")
     var = int(input())
     if var == 1:
         Product.add_product()
@@ -184,17 +184,66 @@ def main_menu():
             print("В каталоге отсутствуют товары!")
             main_menu()
     elif var == 4:
-        print("1 - Импортировать данные из файла\n 2 - Экспортировать данные в файл")
+        print("1 - Импортировать данные из файла\n2 - Экспортировать данные в файл")
         try:
             var_imex = int(input())
         except ValueError:
             print("Введено неверное значение!")
             main_menu()
         else:
-
+            if var_imex == 1:
+                file_import()
+            elif var_imex == 2:
+                file_export()
+            else:
+                print("Введено неверное значение!")
+                main_menu()
+    elif var == 5:
+        return 0
     else:
         print("Введено неверное значение!")
         main_menu()
+
+
+def file_import():
+    with open("text.txt", 'r') as file:
+        for line in file:
+            doc_info = line
+    if len(line) != 0:
+        name = article = cost = number = ''
+        now_decoding = 0
+        for i in line:
+            if i == '^':
+                now_decoding = 1
+            elif i == '<':
+                now_decoding = 2
+            elif i == '>':
+                now_decoding = 3
+            elif i == '|':
+                now_decoding = 4
+            elif i == '~':
+                product = Product(name = name,  article = int(article), cost = int(cost), number = int(number))
+                all_products.append(product)
+                name = article = cost = number = ''
+                now_decoding = 0
+
+            if not(i == '^' or i == '<' or i == '>' or i == '|' or i == '~'):
+                match now_decoding:
+                    case 1:
+                        name += i
+                    case 2:
+                        article += i
+                    case 3:
+                        cost += i
+                    case 4:
+                        number += i
+
+    main_menu()
+def file_export():
+    with open("text.txt", 'w') as file:
+        for i in all_products:
+            file.write('^' + i.name + '<' + str(i.article) + '>' + str(i.cost) + '|' + str(i.number) + '~')
+    main_menu()
 
 
 all_products = []
