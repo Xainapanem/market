@@ -167,7 +167,7 @@ def cr_table():
 def main_menu():
     if len(all_products) > 0:
         cr_table()
-    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Экспорт/Импорт каталога\n5 - Выйти из программы")
+    print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Выйти из программы")
     var = int(input())
     if var == 1:
         Product.add_product()
@@ -184,21 +184,6 @@ def main_menu():
             print("В каталоге отсутствуют товары!")
             main_menu()
     elif var == 4:
-        print("1 - Импортировать данные из файла\n2 - Экспортировать данные в файл")
-        try:
-            var_imex = int(input())
-        except ValueError:
-            print("Введено неверное значение!")
-            main_menu()
-        else:
-            if var_imex == 1:
-                file_import()
-            elif var_imex == 2:
-                file_export()
-            else:
-                print("Введено неверное значение!")
-                main_menu()
-    elif var == 5:
         return 0
     else:
         print("Введено неверное значение!")
@@ -243,8 +228,9 @@ def file_export():
     with open("text.txt", 'w') as file:
         for i in all_products:
             file.write('^' + i.name + '<' + str(i.article) + '>' + str(i.cost) + '|' + str(i.number) + '~')
-    main_menu()
 
 
 all_products = []
-main_menu()
+
+file_import()
+file_export()
