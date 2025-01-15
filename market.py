@@ -13,20 +13,44 @@ class Product:
         print("Введите характеристики нового товара")
         flag = True
         while flag:
-            flag = False
-            article = int(input("Артикул:"))
-            Product.check_num(article)
-            for i in all_products:
-                if article == i.article:
-                    print("Товар с таким артикулом уже существует!")
+                flag = False
+                try:
+                    article = int(input("Артикул:"))
+                except ValueError:
+                    print("Артикул не может принимать такие значения!")
                     flag = True
+                if not flag:
+                    Product.check_num(article)
+                    for i in all_products:
+                        if article == i.article:
+                            print("Товар с таким артикулом уже существует!")
+                            flag = True
+
         name = input("Название:")
-        cost = int(input("Стоимость:"))
+
+        flag = True
+        while flag:
+            flag = False
+            try:
+                cost = int(input("Стоимость:"))
+            except ValueError:
+                flag = True
+                print("Стоимость не может принимать такие значения!")
         Product.check_num(cost)
-        number = int(input("Количество:"))
+
+        flag = True
+        while flag:
+            flag = False
+            try:
+                number = int(input("Количество:"))
+            except ValueError:
+                flag = True
+                print("Количество не может принимать такие значения!")
         Product.check_num(number)
+
         new_product = Product(article, name, cost, number)
         all_products.append(new_product)
+        file_export()
         main_menu()
 
     @staticmethod
@@ -165,8 +189,10 @@ def cr_table():
 
 
 def main_menu():
+    file_import()
     if len(all_products) > 0:
         cr_table()
+
     print("МЕНЮ\n1 - Добавить товар\n2 - Изменить характеристики товара\n3 - Удалить товар\n4 - Выйти из программы")
     var = int(input())
     if var == 1:
@@ -189,48 +215,55 @@ def main_menu():
         print("Введено неверное значение!")
         main_menu()
 
-
 def file_import():
+    flag = False
     with open("text.txt", 'r') as file:
         for line in file:
             doc_info = line
-    if len(line) != 0:
-        name = article = cost = number = ''
-        now_decoding = 0
-        for i in line:
-            if i == '^':
-                now_decoding = 1
-            elif i == '<':
-                now_decoding = 2
-            elif i == '>':
-                now_decoding = 3
-            elif i == '|':
-                now_decoding = 4
-            elif i == '~':
-                product = Product(name = name,  article = int(article), cost = int(cost), number = int(number))
-                all_products.append(product)
-                name = article = cost = number = ''
-                now_decoding = 0
+            flag = True
+    if flag:
+            name = article = cost = number = ''
+            now_decoding = 0
+            all_products.clear()
+            for i in doc_info:
+                if i == '^':
+                    now_decoding = 1
+                elif i == '<':
+                    now_decoding = 2
+                elif i == '>':
+                    now_decoding = 3
+                elif i == '|':
+                    now_decoding = 4
+                elif i == '~':
+                    product = Product(name = name,  article = int(article), cost = int(cost), number = int(number))
+                    all_products.append(product)
+                    name = article = cost = number = ''
+                    now_decoding = 0
 
-            if not(i == '^' or i == '<' or i == '>' or i == '|' or i == '~'):
-                match now_decoding:
-                    case 1:
-                        name += i
-                    case 2:
-                        article += i
-                    case 3:
-                        cost += i
-                    case 4:
-                        number += i
+                if not(i == '^' or i == '<' or i == '>' or i == '|' or i == '~'):
+                    match now_decoding:
+                        case 1:
+                            name += i
+                        case 2:
+                            article += i
+                        case 3:
+                            cost += i
+                        case 4:
+                            number += i
 
-    main_menu()
+
 def file_export():
     with open("text.txt", 'w') as file:
-        for i in all_products:
-            file.write('^' + i.name + '<' + str(i.article) + '>' + str(i.cost) + '|' + str(i.number) + '~')
+        if len(all_products) != 0:
+            for i in all_products:
+                file.write('^' + i.name + '<' + str(i.article) + '>' + str(i.cost) + '|' + str(i.number) + '~')
 
 
 all_products = []
 
-file_import()
-file_export()
+try:
+    open("text.txt", 'r')
+except FileNotFoundError:
+    open("text.txt", 'w')
+
+main_menu()
